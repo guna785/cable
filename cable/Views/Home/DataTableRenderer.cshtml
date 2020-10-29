@@ -1,0 +1,58 @@
+﻿
+<table id="MydataTable"></table>
+<script>
+
+    var columns ;
+    function ajaxLoader() {
+        $.ajax({
+            url: "/Home/GetDatatableColumns/",
+            dataType: 'json',
+            type: 'post',
+            contentType: 'application/json',
+            processData: false,
+            data: JSON.stringify("users"),
+            async: true,
+            success: function (response) {
+                alert(JSON.stringify(response));
+                for (i = 0; i < response.length; i++) {
+                    alert(JSON.stringify(response[i]));
+                    if (response[i].data === "createdAt") {
+                        columns.push({
+                            data: response[i].data,
+                            render: function (data, type, row) {
+                                console.log(row);
+                                // If display or filter data is requested, format the date
+                                if (type === "display" || type === "filter") {
+                                    return moment(data).format("ddd DD/MM/YYYY HH:mm:ss");
+                                }
+                                // Otherwise the data type requested (`type`) is type detection or
+                                // sorting data, for which we want to use the raw date value, so just return
+                                // that, unaltered
+                                return data;
+                            }
+                        });
+                    }
+                    else {
+                        columns.push({
+                            data: response[i].data
+                        });
+                    }
+                }
+                columns.push({
+                    data: null,
+                    render: function (data, type, row) {
+                        return '<a href="#" class="btn btn-primary" onclick="editArea(\'' + row.id + '\');">Edit</a>  <a class="btn btn-danger" onclick="delAreas(\'' + row.id + '\');" title="delete">Delete</a>';
+                    }
+                });
+
+                alert(JSON.stringify(columns));
+
+            },
+            error: function (e) {
+                swal("Oops", e.responseText, "error");
+                
+            }
+        });
+    }
+    ajaxLoader();
+</script>

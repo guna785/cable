@@ -1,0 +1,292 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<!-- Content Header (Page header) -->
+<div class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0 text-dark">Dashboard</h1>
+            </div><!-- /.col -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                  
+                </ol>
+            </div><!-- /.col -->
+        </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+</div>
+<!-- /.content-header -->
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <!-- Info boxes -->
+        <div class="row">
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon bg-info elevation-1"><i class="fas fa-cog"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">All Customer</span>
+                        <span class="info-box-number">
+                            @ViewBag.allCus
+                        </span>
+                        <span class="info-box-text">Active Customer</span>
+                        <span class="info-box-number">
+                            @ViewBag.activeCus
+                        </span>
+                        <span class="info-box-text">Deactive Customer</span>
+                        <span class="info-box-number">
+                           @ViewBag.deactiveCus
+                        </span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-danger elevation-1"><i class="fas fa-thumbs-up"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">All STB</span>
+                        <span class="info-box-number">@ViewBag.allSTB</span>
+                        <span class="info-box-text">Alloted STB</span>
+                        <span class="info-box-number">@ViewBag.allotedSTB</span>
+                        <span class="info-box-text">UnAlloted STB</span>
+                        <span class="info-box-number">@ViewBag.unallotedSTB</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <!-- fix for small devices only -->
+            <div class="clearfix hidden-md-up"></div>
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">All Invoices</span>
+                        <span class="info-box-number">@ViewBag.allInv</span>
+                        <span class="info-box-text">Paid Invoices</span>
+                        <span class="info-box-number">@ViewBag.paidInvoice</span>
+                        <span class="info-box-text">UnPaid Invoices</span>
+                        <span class="info-box-number">@ViewBag.unpaidInvoice</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="info-box mb-3">
+                    <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+
+                    <div class="info-box-content">
+                        <span class="info-box-text">All Members</span>
+                        <span class="info-box-number">@ViewBag.usr</span>
+                        <span class="info-box-text">Active Members</span>
+                        <span class="info-box-number">@ViewBag.activeusr</span>
+                        <span class="info-box-text">De Active Members</span>
+                        <span class="info-box-number">@ViewBag.deactiveusr</span>
+
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
+                <!-- /.info-box -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title">Monthly Collection Report</h5>
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                           
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p class="text-center">
+                                    <select id="chooseyear" class="form-control">
+                                       @for(int i = 2017; i <= DateTime.Now.Year; i++)
+                                       {
+                                           <option>@i</option>
+                                       }
+                                    </select>
+                                    
+                                </p>
+
+                                <div class="chart">
+                                    <!-- Sales Chart Canvas -->
+                                    <canvas id="salesChart" height="180" style="height: 180px;"></canvas>
+                                </div>
+                                <!-- /.chart-responsive -->
+                            </div>
+                            <!-- /.col -->
+                           
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- ./card-body -->
+                    <div class="card-footer">
+                        <div class="row">
+                           
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+       
+    </div><!--/. container-fluid -->
+</section>
+<!-- /.content -->
+
+<script>
+    $(function () {
+  'use strict'
+
+  /* ChartJS
+   * -------
+   * Here we will create a few charts using ChartJS
+   */
+
+  //-----------------------
+  // - MONTHLY SALES CHART -
+  //-----------------------
+
+        // Get context with jQuery - using jQuery's .get() method.
+        var id = $("#chooseyear").val();
+       
+        function loadChart(id) {
+
+            $.ajax({
+                url: "/Home/graphData/",
+                dataType: 'json',
+                type: 'post',
+                contentType: 'application/json',
+                processData: false,
+                data: JSON.stringify(id),
+                async: true,
+                success: function (response) {
+                    console.log(response);
+                    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                    var inv = [];
+                    var pinv = [];
+                    var uinv = [];
+                    var r = months.forEach(function (item, index, arr) {
+                        var found = response.all.find(elem => elem.month === item);
+                        inv[index] = found ? found.amount : 0;
+                        var found1 = response.paid.find(elem => elem.month === item);
+                        pinv[index] = found1 ? found1.amount : 0;
+                        var found2 = response.unpaid.find(elem => elem.month === item);
+                        uinv[index] = found2 ? found2.amount : 0;
+                    });
+                    var salesChartCanvas = $('#salesChart').get(0).getContext('2d')
+
+                    var salesChartData = {
+                        labels: months,
+                        datasets: [
+                            {
+                                label: 'Total Revenue',
+                                backgroundColor: 'rgba(60,141,188,0.9)',
+                                borderColor: 'rgba(60,141,188,0.8)',
+                                pointRadius: true,
+                                pointColor: '#3b8bba',
+                                pointStrokeColor: 'rgba(60,141,188,1)',
+                                pointHighlightFill: '#fff',
+                                pointHighlightStroke: 'rgba(60,141,188,1)',
+                                data: inv
+                            },
+                            {
+                                label: 'Payment Collected',
+                                backgroundColor: 'rgba(210, 214, 222, 1)',
+                                borderColor: 'rgba(210, 214, 222, 1)',
+                                pointRadius: true,
+                                pointColor: 'rgba(210, 214, 222, 1)',
+                                pointStrokeColor: '#c1c7d1',
+                                pointHighlightFill: '#fff',
+                                pointHighlightStroke: 'rgba(220,220,220,1)',
+                                data: pinv
+                            },
+                            {
+                                label: 'Payment Pending',
+                                backgroundColor: 'rgba(210, 214, 222, 1)',
+                                borderColor: 'rgba(210, 214, 222, 1)',
+                                pointRadius: true,
+                                pointColor: 'rgba(210, 214, 222, 1)',
+                                pointStrokeColor: '#c1c7d1',
+                                pointHighlightFill: '#fff',
+                                pointHighlightStroke: 'rgba(220,220,220,1)',
+                                data: uinv
+                            }
+                        ]
+                    }
+
+                    var salesChartOptions = {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        legend: {
+                            display: false
+                        },
+                        scales: {
+                            xAxes: [{
+                                gridLines: {
+                                    display: false
+                                }
+                            }],
+                            yAxes: [{
+                                gridLines: {
+                                    display: false
+                                }
+                            }]
+                        }
+                    }
+
+                    // This will get the first returned node in the jQuery collection.
+                    // eslint-disable-next-line no-unused-vars
+                    var salesChart = new Chart(salesChartCanvas, {
+                        type: 'line',
+                        data: salesChartData,
+                        options: salesChartOptions
+                    }
+                    )
+                },
+                error: function (e) {
+                    swal("Oops", e.responseText, "error");
+                    LoadData();
+                }
+
+            });
+        }
+        $("#chooseyear").change(function () {
+           
+                id = $("#chooseyear").val();
+                loadChart(id);
+            });
+
+        loadChart(id);
+    });
+   
+
+</script>

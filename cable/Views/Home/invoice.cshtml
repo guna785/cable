@@ -1,0 +1,193 @@
+﻿
+@{
+    ViewData["Title"] = "invoice";
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Invoice</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><a onclick="AddNew();" class="btn btn-primary">Add New</a></h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <table id="InvoiceTable" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Invoice ID</th>
+                                    <th>Customer ID</th>
+                                    <th>Month</th>
+                                    <th>Amount</th>
+                                    <th>Balance</th>
+                                    <th>Status</th>
+                                    <th>Created At</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+
+    function LoadData() {
+        $("#InvoiceTable").DataTable({
+            // Design Assets
+            stateSave: true,
+            autoWidth: true,
+            destroy: true,
+            // ServerSide Setups
+            processing: true,
+            serverSide: true,
+            // Paging Setups
+            paging: true,
+            // Searching Setups
+            searching: { regex: true },
+            // Ajax Filter
+            ajax: {
+                url: "/ViewData/LoadInvoices/",
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                data: function (d) {
+                    return JSON.stringify(d);
+                }
+            },
+            // Columns Setups
+            columns: [
+                { data: "invid" },
+                { data: "cid" },
+                { data: "month" },
+                { data: "amount" },
+                { data: "balance" },
+                { data: "status" },
+                {
+                    data: "createdAt",
+                    render: function (data, type, row) {
+                        console.log(row);
+                        // If display or filter data is requested, format the date
+                        if (type === "display" || type === "filter") {
+                            return moment(data).format("ddd DD/MM/YYYY HH:mm:ss");
+                        }
+                        // Otherwise the data type requested (`type`) is type detection or
+                        // sorting data, for which we want to use the raw date value, so just return
+                        // that, unaltered
+                        return data;
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        return '<a href="#" class="btn btn-primary  btn-sm checkbox-toggle" onclick="Pay(\'' + row.id + '-' + row.balance + '-y\');" title="Pay"><i class="far fa-credit-card"></i></a><a href="#" class="btn btn-success  btn-sm checkbox-toggle" onclick="invDownload(\'' + row.id + '\');" title="Download"><i class="fas fa-download"></i></a>  <a class="btn btn-danger btn-sm checkbox-toggle" onclick="delInv(\'' + row.id + '\');" title="delete"><i class="far fa-trash-alt"></i></a>';
+                   }
+                }
+            ],
+            // Column Definitions
+            columnDefs: [
+                { targets: "no-sort", orderable: false },
+                { targets: "no-search", searchable: false },
+                {
+                    targets: "trim",
+                    render: function (data, type, full, meta) {
+                        if (type === "display") {
+                            data = strtrunc(data, 10);
+                        }
+
+                        return data;
+                    }
+                },
+                { targets: "date-type", type: "date-eu" }
+            ]
+        });
+    }
+    $(document).ready(function () {
+        LoadData();
+    });
+    function Pay(id) {
+        $("#mbody").load("/Home/PopUpModelShow/PayInvoice-" + id, function () {
+
+            $("#mtitle").text("Pay Invoice");
+            $("#AreaModel").modal({ backdrop: 'static', keyboard: false });
+        });
+    }
+    function invDownload(id) {
+        var mywindow = window.open("/Home/invoiceDownload/" + id, 'Print', 'height=900,width=900');
+
+
+        setTimeout(function () {
+            mywindow.focus();
+            mywindow.print();
+            //mywindow.close();
+        }, 5000);
+
+
+
+        return true;
+    }
+    function delInv(id) {
+        swal({
+            title: "Are you sure?",
+            text: "Your will not be able to recover this Action!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+            function () {
+                $.ajax({
+                    url: "/Delete/DeleteInvoice/",
+                    dataType: 'json',
+                    type: 'post',
+                    contentType: 'application/json',
+                    processData: false,
+                    data: JSON.stringify(id),
+                    async: true,
+                    success: function (response) {
+                        swal("Deleted!", "Your Record has been deleted.", "success");
+                        LoadData();
+                    },
+                    error: function (e) {
+                        swal("Oops", e.responseText, "error");
+                        LoadData();
+                    }
+                });
+
+            });
+    }
+  
+    function strtrunc(str, num) {
+        if (str.length > num) {
+            return str.slice(0, num) + "...";
+        }
+        else {
+            return str;
+        }
+    }
+
+</script>
+
