@@ -20,7 +20,7 @@ namespace cable
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>().UseUrls(new[] { "http://localhost:5002" });
                 });
     }
 }
