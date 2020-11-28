@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Connecting World</string>
+    <string name="title_home">Chats</string>
+    <string name="title_dashboard">Contacts</string>
+    <string name="title_notifications">Notifications</string>
+</resources>
