@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -64,6 +65,7 @@ namespace cable.Controllers
             {
                 return BadRequest("Bad Request");
             }
+           
             var adm = _zones.AsQueryable().Where(x => x.name == zon.name).FirstOrDefault();
             if (adm == null)
             {
@@ -724,16 +726,33 @@ namespace cable.Controllers
         public async Task<IActionResult> InsertBulk([FromBody] BulkUploadSchema bulk)
         {
             string s = System.Text.Encoding.UTF8.GetString(bulk.photo, 0, bulk.photo.Length);
+            var userIdentity = (ClaimsIdentity)User.Identity;
+            var claims = userIdentity.Claims;
+            var roleClaimType = userIdentity.RoleClaimType;
+            var roles = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+            var zone = "";
+            if (roles.FirstOrDefault().Value == "admin")
+            {
+                zone = _admins.AsQueryable().Where(x => x.uname == HttpContext.User.Identity.Name).FirstOrDefault().zone;
+            }
+            else if (roles.FirstOrDefault().Value == "Collection" || roles.FirstOrDefault().Value == "Technitian")
+            {
+                zone = _users.AsQueryable().Where(x => x.uname == HttpContext.User.Identity.Name).FirstOrDefault().zone;
+            }
+            else if (roles.FirstOrDefault().Value == "root")
+            {
+                zone = "root";
+            }
             dynamic json = JValue.Parse(s);
             if (bulk.dbtable == "Area")
             {
+                
                 foreach (var j in json)
                 {
                     string name = j.name;
                     string z = j.zone;
-                    var area = _areas.AsQueryable().Where(x => x.name == name).FirstOrDefault();
-                    var zon = _zones.AsQueryable().Where(x => x.name == z).FirstOrDefault();
-                    if (area == null && zon != null)
+                    var area = _areas.AsQueryable().Where(x => x.name == name && x.zone == zone).FirstOrDefault();
+                    if (area == null && z==zone)
                     {
                         var res = await _areas.InsertOneAsync(new area()
                         {
@@ -767,9 +786,8 @@ namespace cable.Controllers
                 {
                     string name = j.name;
                     string z = j.zone;
-                    var prov = _providers.AsQueryable().Where(x => x.name == name && x.zone == z).FirstOrDefault();
-                    var zon = _zones.AsQueryable().Where(x => x.name == z).FirstOrDefault();
-                    if (prov == null && zon != null)
+                    var prov = _providers.AsQueryable().Where(x => x.name == name && x.zone == zone).FirstOrDefault();
+                    if (prov == null && z==zone)
                     {
                         var res = await _providers.InsertOneAsync(new provider()
                         {
@@ -803,9 +821,8 @@ namespace cable.Controllers
                 {
                     string name = j.name;
                     string z = j.zone;
-                    var prov = _packages.AsQueryable().Where(x => x.name == name).FirstOrDefault();
-                    var zon = _zones.AsQueryable().Where(x => x.name == z).FirstOrDefault();
-                    if (prov == null && zon != null)
+                    var prov = _packages.AsQueryable().Where(x => x.name == name && x.zone == zone).FirstOrDefault();
+                    if (prov == null && z==zone)
                     {
                         var res = await _packages.InsertOneAsync(new package()
                         {
@@ -845,9 +862,8 @@ namespace cable.Controllers
                 {
                     string cid = c.cusid;
                     string z = c.zone;
-                    var zon = _zones.AsQueryable().Where(x => x.name == z).FirstOrDefault();
-                    var cus = _customers.AsQueryable().Where(x => x.cid == cid && x.zone == z).FirstOrDefault();
-                    if (cus == null && zon != null)
+                    var cus = _customers.AsQueryable().Where(x => x.cid == cid && x.zone == zone).FirstOrDefault();
+                    if (cus == null && z==zone)
                     {
                         try
                         {
