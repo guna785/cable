@@ -116,7 +116,7 @@
                 {
                     data: null,
                     render: function (data, type, row) {
-                        return '<a href="/Home/EditCustomer/' + row.id + '-' + row.cid + '" class="btn btn-primary  btn-sm checkbox-toggle" title="Edit" ><i class="fas fa-edit"></i></a>  <a class="btn btn-danger btn-sm checkbox-toggle" onclick="delcustomer(\'' + row.id + '\');" title="delete"><i class="far fa-trash-alt"></i></a>';
+                        return '<a href="/Home/EditCustomer/' + row.id + '-' + encodeURIComponent(row.cid) + '" class="btn btn-primary  btn-sm checkbox-toggle" title="Edit" ><i class="fas fa-edit"></i></a>  <a class="btn btn-danger btn-sm checkbox-toggle" onclick="delcustomer(\'' + row.id + '\');" title="delete"><i class="far fa-trash-alt"></i></a>';
                     }
                 }
             ],

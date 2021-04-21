@@ -158,6 +158,16 @@ namespace BL.SchemaEditBuilder
             if (obj.Equals("cusSTBSchema"))
             {
                 var obdata = _stbs.FindById(id);
+                var addonPack = "[]";
+                try
+                {
+                    var ob = Newtonsoft.Json.JsonConvert.DeserializeObject<List<string>>(obdata.addonpack);
+                    addonPack = ob.Any(x => x.Trim().Equals("")) ? "[]" : Newtonsoft.Json.JsonConvert.SerializeObject(ob);
+                }
+                catch
+                {
+                    addonPack = "[]";
+                }
                 return (T)Convert.ChangeType(new cusSTBSchema()
                 {
                     zone = obdata.zone,
@@ -165,7 +175,7 @@ namespace BL.SchemaEditBuilder
                     stbno = obdata.stbno,
                     planname = obdata.planname,
                     Id = obdata.Id.ToString(),
-                    addonpack = obdata.addonpack,
+                    addonpack = addonPack,
                     cusID = obdata.cid
                 }, typeof(T));
             }
