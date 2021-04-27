@@ -144,7 +144,7 @@ namespace cable.Controllers
                         msg = "New User is Added  " + zon.name,
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        zone = "root",
+                        zone = zon.zone,
                         remarks = "none",
                         subject = "Data Insertion",
                         CreatedAt = DateTime.Now
@@ -182,7 +182,7 @@ namespace cable.Controllers
                         msg = "New Area is Added  " + zon.name,
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        zone = "root",
+                        zone = zon.zone,
                         remarks = "none",
                         subject = "Data Insertion",
                         CreatedAt = DateTime.Now
@@ -220,7 +220,7 @@ namespace cable.Controllers
                         msg = "New Provider is Added  " + zon.name,
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        zone = "root",
+                        zone = zon.zone,
                         remarks = "none",
                         subject = "Data Insertion",
                         CreatedAt = DateTime.Now
@@ -261,8 +261,8 @@ namespace cable.Controllers
                         msg = "New Package is Added  " + zon.name,
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        zone = "root",
-                        remarks = "none",
+                        zone = zon.zone,
+                        remarks = zon.zone,
                         subject = "Data Insertion",
                         CreatedAt = DateTime.Now
                     };
@@ -310,7 +310,7 @@ namespace cable.Controllers
                             msg = "New STB  is Added and alloted  " + zon.stbno,
                             name = "EventLog",
                             uid = HttpContext.User.Identity.Name,
-                            zone = "root",
+                            zone = zon.zone,
                             remarks = "none",
                             subject = "Data Insertion",
                             CreatedAt = DateTime.Now
@@ -338,7 +338,7 @@ namespace cable.Controllers
                             msg = "Existing STB  is alloted  " + zon.stbno,
                             name = "EventLog",
                             uid = HttpContext.User.Identity.Name,
-                            zone = "root",
+                            zone = zon.zone,
                             remarks = "none",
                             subject = "Data Insertion",
                             CreatedAt = DateTime.Now
@@ -365,7 +365,7 @@ namespace cable.Controllers
                             msg = "Existing STB  is Shifted  " + zon.stbno,
                             name = "EventLog",
                             uid = HttpContext.User.Identity.Name,
-                            zone = "root",
+                            zone = zon.zone,
                             remarks = "none",
                             subject = "Data Insertion",
                             CreatedAt = DateTime.Now
@@ -396,7 +396,7 @@ namespace cable.Controllers
                             msg = "Existing STB is Updated  " + zon.stbno,
                             name = "EventLog",
                             uid = HttpContext.User.Identity.Name,
-                            zone = "root",
+                            zone = zon.zone,
                             remarks = "none",
                             subject = "Data Insertion",
                             CreatedAt = DateTime.Now
@@ -452,7 +452,7 @@ namespace cable.Controllers
                         msg = "New Admin is Added  " + zon.name,
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        zone = "root",
+                        zone = zon.zone,
                         remarks = "none",
                         subject = "Data Insertion",
                         CreatedAt = DateTime.Now
@@ -476,7 +476,14 @@ namespace cable.Controllers
             var adm = _invoicess.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zon.zone && x.cid == zon.cid && x.month == DateConfig.getMonthIntfromNumber(zon.month) && x.year == Convert.ToInt32(zon.year)).FirstOrDefault();
             if (adm == null)
             {
-                var stbs = _stbss.AsQueryable().Where(x => x.cid == zon.cid && x.zone == zon.zone).AsEnumerable().Sum(x => Convert.ToDouble(x.amount));
+                var stbs = (from s in _stbss.AsQueryable()
+                            join p in _packages.AsQueryable() on s.planname equals p.name
+                            where s.cid == zon.cid && s.zone == zon.zone
+                            select new
+                            {
+                                p.amount
+                            }).AsEnumerable().Sum(x => Convert.ToInt32(x.amount));
+                // var stbs = _stbss.AsQueryable().Where(x => x.cid == c.cid && x.zone == zon.zone).AsEnumerable().Sum(x => Convert.ToDouble(x.amount));
                 var dicount = _customers.AsQueryable().Where(x => x.cid == zon.cid && x.zone == zon.zone).FirstOrDefault() == null ? 0 : Convert.ToDouble(_customers.AsQueryable().Where(x => x.cid == zon.cid).FirstOrDefault().discount);
                 var invid = _invoicess.AsQueryable().Where(x => x.zone == zon.zone).OrderByDescending(x => x.CreatedAt).FirstOrDefault() == null ? 1 : Convert.ToInt32(_invoicess.AsQueryable().Where(x => x.zone == zon.zone).OrderByDescending(x => x.CreatedAt).FirstOrDefault().invid) + 1;
 
@@ -504,7 +511,7 @@ namespace cable.Controllers
                         msg = "New Invoice is Added  " + zon.cid,
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        zone = "root",
+                        zone = zon.zone,
                         remarks = "none",
                         subject = "Data Insertion",
                         CreatedAt = DateTime.Now
@@ -609,7 +616,7 @@ namespace cable.Controllers
                         msg = "Invoice Generated Successfully  " + zon.name,
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        zone = "root",
+                        zone = zon.zone,
                         remarks = "none",
                         subject = "Data Insertion",
                         CreatedAt = DateTime.Now
@@ -663,7 +670,7 @@ namespace cable.Controllers
                                 msg = "Payment Done Successfully for " + inv.cid,
                                 name = "EventLog",
                                 uid = HttpContext.User.Identity.Name,
-                                zone = "root",
+                                zone = inv.zone,
                                 remarks = "none",
                                 subject = "Data Insertion",
                                 CreatedAt = DateTime.Now
@@ -706,7 +713,7 @@ namespace cable.Controllers
                                 msg = "Payment Done Successfully for " + inv.cid,
                                 name = "EventLog",
                                 uid = HttpContext.User.Identity.Name,
-                                zone = "root",
+                                zone = inv.zone,
                                 remarks = "none",
                                 subject = "Data Insertion",
                                 CreatedAt = DateTime.Now
@@ -770,7 +777,7 @@ namespace cable.Controllers
                     msg = "Area Bulk Upload Done",
                     name = "EventLog",
                     uid = HttpContext.User.Identity.Name,
-                    zone = "root",
+                    zone = zone,
                     remarks = "none",
                     subject = "Data Insertion",
                     CreatedAt = DateTime.Now
@@ -806,7 +813,7 @@ namespace cable.Controllers
                     msg = "Provider Bulk Upload Done",
                     name = "EventLog",
                     uid = HttpContext.User.Identity.Name,
-                    zone = "root",
+                    zone = zone,
                     remarks = "none",
                     subject = "Data Insertion",
                     CreatedAt = DateTime.Now
@@ -843,7 +850,7 @@ namespace cable.Controllers
                     msg = "Provider Bulk Upload Done",
                     name = "EventLog",
                     uid = HttpContext.User.Identity.Name,
-                    zone = "root",
+                    zone =zone,
                     remarks = "none",
                     subject = "Data Insertion",
                     CreatedAt = DateTime.Now
@@ -1029,7 +1036,7 @@ namespace cable.Controllers
                     msg = "Customer Bulk Info  Upload Done",
                     name = "EventLog",
                     uid = HttpContext.User.Identity.Name,
-                    zone = "root",
+                    zone = zone,
                     remarks = "none",
                     subject = "Data Insertion",
                     CreatedAt = DateTime.Now
@@ -1066,7 +1073,7 @@ namespace cable.Controllers
                         msg = "Email Insertion  Done",
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        zone = "root",
+                        zone = mail.zone,
                         remarks = "none",
                         subject = "Data Insertion",
                         CreatedAt = DateTime.Now
@@ -1093,7 +1100,7 @@ namespace cable.Controllers
                         msg = "Email Updation  Done",
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        zone = "root",
+                        zone =mail.zone,
                         remarks = "none",
                         subject = "Data Insertion",
                         CreatedAt = DateTime.Now
@@ -1112,6 +1119,70 @@ namespace cable.Controllers
             
 
             return BadRequest("Invalid Request");
+        }
+        [HttpPost]
+        public async Task<IActionResult> GenerateBulkInvoice([FromBody] GenerateBulkInvSchema zon)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Bad Request");
+            }
+            var cus = _customers.AsQueryable().Where(x => x.zone == zon.zone && x.status.ToLower() == "active");
+            foreach(var c in cus)
+            {
+                var adm = _invoicess.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zon.zone && x.cid == c.cid && x.month == DateConfig.getMonthIntfromNumber(zon.month) && x.year == Convert.ToInt32(zon.year)).FirstOrDefault();
+                if (adm == null)
+                {
+                    var stbs = (from s in _stbss.AsQueryable() join
+                                p in _packages.AsQueryable() on s.planname equals p.name 
+                                where s.cid==c.cid && s.zone==c.zone select new { 
+                                    p.amount
+                                }).AsEnumerable().Sum(x=>Convert.ToInt32(x.amount));
+                   // var stbs = _stbss.AsQueryable().Where(x => x.cid == c.cid && x.zone == zon.zone).AsEnumerable().Sum(x => Convert.ToDouble(x.amount));
+                    var dicount = _customers.AsQueryable().Where(x => x.cid == c.cid && x.zone == zon.zone).FirstOrDefault() == null ? 0 : Convert.ToDouble(_customers.AsQueryable().Where(x => x.cid == c.cid).FirstOrDefault().discount);
+                    var invid = _invoicess.AsQueryable().Where(x => x.zone == zon.zone).OrderByDescending(x => x.CreatedAt).FirstOrDefault() == null ? 1 : Convert.ToInt32(_invoicess.AsQueryable().Where(x => x.zone == zon.zone).OrderByDescending(x => x.CreatedAt).FirstOrDefault().invid) + 1;
+                    if (stbs != 0)
+                    {
+                        var res = await _invoicess.InsertOneAsync(new invoice()
+                        {
+                            amount = (stbs - dicount).ToString(),
+                            balance = (stbs - dicount).ToString(),
+                            cid = c.cid,
+                            comments = "none",
+                            CreatedAt = zon.cdate,
+                            month = DateConfig.getMonthIntfromNumber(zon.month),
+                            year = Convert.ToInt32(zon.year),
+                            invid = invid.ToString(),
+                            noofstbs = _stbss.AsQueryable().Where(x => x.cid == c.cid && x.zone == zon.zone).Count().ToString(),
+                            zone = zon.zone,
+                            remarks = "none",
+                            status = "UnPaid"
+
+                        });
+
+                        if (res)
+                        {
+                            var l = new logs()
+                            {
+                                msg = "New Invoice is Added  " + c.cid,
+                                name = "EventLog",
+                                uid = HttpContext.User.Identity.Name,
+                                zone = zon.zone,
+                                remarks = "none",
+                                subject = "Data Insertion",
+                                CreatedAt = DateTime.Now
+                            };
+                            var r = await _log.InsertOneAsync(l);
+
+                        }
+                    }
+                   
+
+                }
+            }
+
+            var result = new { status = "New Invoice Sucessfully Added" };
+            return Ok(result);
         }
     }
 }

@@ -376,6 +376,12 @@ namespace cable.Controllers
                 });
                 ViewBag.modalTitle = "GenerateCusINV";
             }
+            if (ID.Contains("GenerateBulkInvoice"))
+            {
+                schema = await GSgenerator.GenerateSchema<GenerateBulkInvSchema>(zone);
+               // var objId = ID.Split('-')[1];
+                ViewBag.modalTitle = "GenerateBulkInvoice";
+            }
             if (ID.Contains("PayInvoice"))
             {
                 var objId = ID.Split('-')[1];

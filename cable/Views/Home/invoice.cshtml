@@ -21,7 +21,7 @@
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title"><a onclick="AddNew();" class="btn btn-primary">Add New</a></h3>
+                        <h3 class="card-title"><a onclick="AddNew();" class="btn btn-primary">Generate Bulk Invoice</a></h3>
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body">
@@ -141,6 +141,13 @@
     $(document).ready(function () {
         LoadData();
     });
+    function AddNew() {
+        $("#mbody").load("/Home/PopUpModelShow/GenerateBulkInvoice" , function () {
+
+            $("#mtitle").text("Generate Bulk Invoice");
+            $("#AreaModel").modal({ backdrop: 'static', keyboard: false });
+        });
+    }
     function Pay(id) {
         $("#mbody").load("/Home/PopUpModelShow/PayInvoice-" + id, function () {
 

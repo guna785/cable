@@ -94,7 +94,7 @@ namespace cable.Controllers
                 orderAscendingDirection = true;
             }
 
-            var result = zone == "root" ? _users.AsQueryable().Where(x => x.status != "Deleted") : _users.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zone);
+            var result = zone == "root" ? _users.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _users.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             if (!string.IsNullOrEmpty(searchBy))
             {
@@ -109,7 +109,7 @@ namespace cable.Controllers
 
             // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
             var filteredResultsCount = result.Count();
-            var cntdb = zone == "root" ? _users.AsQueryable().Where(x => x.status != "Deleted") : _users.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zone);
+            var cntdb = zone == "root" ? _users.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _users.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             var totalResultsCount = cntdb.Count();
 
@@ -162,7 +162,7 @@ namespace cable.Controllers
                 orderAscendingDirection = true;
             }
 
-            var result = _admins.AsQueryable().Where(x => x.status != "Deleted");
+            var result = _admins.AsQueryable().Where(x => x.status.ToLower() != "deleted");
 
             if (!string.IsNullOrEmpty(searchBy))
             {
@@ -178,7 +178,7 @@ namespace cable.Controllers
 
             // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
             var filteredResultsCount = result.Count();
-            var cntdb = _admins.AsQueryable().Where(x => x.status != "Deleted");
+            var cntdb = _admins.AsQueryable().Where(x => x.status.ToLower() != "deleted");
 
             var totalResultsCount = cntdb.Count();
 
@@ -231,11 +231,12 @@ namespace cable.Controllers
                 orderAscendingDirection = true;
             }
 
-            var result = zone == "root" ? _customers.AsQueryable().Where(x => x.status != "Deleted") : _customers.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zone);
+            var result = zone == "root" ? _customers.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _customers.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             if (!string.IsNullOrEmpty(searchBy))
             {
-                result = result.Where(r => r.name != null && r.name.ToUpper().Contains(searchBy.ToUpper()) ||
+                result = result.Where(r => r.cid != null && r.cid.ToUpper().Contains(searchBy.ToUpper()) ||
+                                            r.name != null && r.name.ToUpper().Contains(searchBy.ToUpper()) ||
                                            r.email != null && r.email.ToUpper().Contains(searchBy.ToUpper()) ||
                                            r.phone != null && r.phone.ToUpper().Contains(searchBy.ToUpper()) ||
                                            r.status != null && r.status.ToUpper().Contains(searchBy.ToUpper())
@@ -246,7 +247,7 @@ namespace cable.Controllers
 
             // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
             var filteredResultsCount = result.Count();
-            var cntdb = zone == "root" ? _customers.AsQueryable().Where(x => x.status != "Deleted") : _customers.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zone);
+            var cntdb = zone == "root" ? _customers.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _customers.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             var totalResultsCount = cntdb.Count();
 
@@ -299,7 +300,7 @@ namespace cable.Controllers
                 orderAscendingDirection = true;
             }
 
-            var result = zone == "root" ? _stbss.AsQueryable().Where(x => x.status != "Deleted") : _stbss.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zone);
+            var result = zone == "root" ? _stbss.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _stbss.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             if (!string.IsNullOrEmpty(searchBy))
             {
@@ -314,7 +315,7 @@ namespace cable.Controllers
 
             // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
             var filteredResultsCount = result.Count();
-            var cntdb = zone == "root" ? _stbss.AsQueryable().Where(x => x.status != "Deleted") : _stbss.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zone);
+            var cntdb = zone == "root" ? _stbss.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _stbss.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             var totalResultsCount = cntdb.Count();
 
@@ -378,7 +379,7 @@ namespace cable.Controllers
                 orderAscendingDirection = true;
             }
 
-            var result = zone == "root" ? _invoicess.AsQueryable().Where(x => x.status != "Deleted") : _invoicess.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zone);
+            var result = zone == "root" ? _invoicess.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _invoicess.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             if (!string.IsNullOrEmpty(searchBy))
             {
@@ -393,7 +394,7 @@ namespace cable.Controllers
 
             // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
             var filteredResultsCount = result.Count();
-            var cntdb = zone == "root" ? _invoicess.AsQueryable().Where(x => x.status != "Deleted") : _invoicess.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zone);
+            var cntdb = zone == "root" ? _invoicess.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _invoicess.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             var totalResultsCount = cntdb.Count();
 
@@ -456,7 +457,7 @@ namespace cable.Controllers
                 orderAscendingDirection = true;
             }
 
-            var result = zone == "root" ? _collections.AsQueryable().Where(x => x.status != "Deleted") : _collections.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zone);
+            var result = zone == "root" ? _collections.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _collections.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             if (!string.IsNullOrEmpty(searchBy))
             {
@@ -471,7 +472,7 @@ namespace cable.Controllers
 
             // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
             var filteredResultsCount = result.Count();
-            var cntdb = _collections.AsQueryable().Where(x => x.status != "Deleted");
+            var cntdb = zone == "root" ? _collections.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _collections.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             var totalResultsCount = cntdb.Count();
 
@@ -545,7 +546,7 @@ namespace cable.Controllers
                 orderAscendingDirection = true;
             }
 
-            var result = zone == "root" ? _users.AsQueryable().Where(x => x.status != "Deleted") : _users.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zone);
+            var result = zone == "root" ? _users.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _users.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             if (!string.IsNullOrEmpty(searchBy))
             {
@@ -560,7 +561,7 @@ namespace cable.Controllers
 
             // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
             var filteredResultsCount = result.Count();
-            var cntdb = zone == "root" ? _users.AsQueryable().Where(x => x.status != "Deleted") : _users.AsQueryable().Where(x => x.status != "Deleted" && x.zone == zone);
+            var cntdb = zone == "root" ? _users.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _users.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             var totalResultsCount = cntdb.Count();
 
@@ -596,7 +597,7 @@ namespace cable.Controllers
                 orderAscendingDirection = true;
             }
 
-            var result = _zones.AsQueryable().Where(x => x.status != "Deleted");
+            var result = _zones.AsQueryable().Where(x => x.status.ToLower() != "deleted");
 
             if (!string.IsNullOrEmpty(searchBy))
             {
@@ -610,7 +611,7 @@ namespace cable.Controllers
 
             // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
             var filteredResultsCount = result.Count();
-            var cntdb = _zones.AsQueryable().Where(x => x.status != "Deleted");
+            var cntdb = _zones.AsQueryable().Where(x => x.status.ToLower() != "deleted");
 
             var totalResultsCount = cntdb.Count();
 
@@ -663,7 +664,7 @@ namespace cable.Controllers
                 orderAscendingDirection = true;
             }
 
-            var result = _areas.AsQueryable().Where(x => x.status != "Deleted");
+            var result =zone=="root"? _areas.AsQueryable().Where(x => x.status.ToLower() != "deleted"): _areas.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone==zone);
 
             if (!string.IsNullOrEmpty(searchBy))
             {
@@ -676,7 +677,7 @@ namespace cable.Controllers
 
             // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
             var filteredResultsCount = result.Count();
-            var cntdb = _areas.AsQueryable().Where(x => x.status != "Deleted");
+            var cntdb = zone == "root" ? _areas.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _areas.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             var totalResultsCount = cntdb.Count();
 
@@ -729,7 +730,7 @@ namespace cable.Controllers
                 orderAscendingDirection = true;
             }
 
-            var result = _providers.AsQueryable().Where(x => x.status != "Deleted");
+            var result =zone=="root"? _providers.AsQueryable().Where(x => x.status.ToLower() != "deleted"): _providers.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone==zone);
 
             if (!string.IsNullOrEmpty(searchBy))
             {
@@ -743,7 +744,7 @@ namespace cable.Controllers
 
             // now just get the count of items (without the skip and take) - eg how many could be returned with filtering
             var filteredResultsCount = result.Count();
-            var cntdb = _providers.AsQueryable().Where(x => x.status != "Deleted");
+            var cntdb = zone == "root" ? _providers.AsQueryable().Where(x => x.status.ToLower() != "deleted") : _providers.AsQueryable().Where(x => x.status.ToLower() != "deleted" && x.zone == zone);
 
             var totalResultsCount = cntdb.Count();
 

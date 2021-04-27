@@ -17,7 +17,7 @@ var generateInvoiceUrl = "/InsertData/GenerateInvoice";
 var cusInvoicePayUrl = "/InsertData/PayCus";
 var emailConfigUrl = "/InsertData/EmailConfigSetting";
 var announcementUrl = "/InsertData/Announcement";
-
+var GenerateBulkInvoiceUrl = "/InsertData/GenerateBulkInvoice";
 var bulkUploadUrl = "/InsertData/InsertBulk";
 
 function JsonPOST(url, data) {
@@ -122,7 +122,10 @@ function DoAction(action, data) {
         JsonPOST(announcementUrl, data);
         LoadData();
     }
-   
+    if (action === "GenerateBulkInvoice") {
+        JsonPOST(GenerateBulkInvoiceUrl, data);
+        LoadData();
+    }
     
 }
 
