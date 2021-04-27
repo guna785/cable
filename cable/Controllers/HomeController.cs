@@ -440,17 +440,49 @@ namespace cable.Controllers
         [HttpPost]
         public async Task<IActionResult> graphData([FromBody] string Id)
         {
-            var inv = _invoices.AsQueryable().Where(x => x.year == Convert.ToInt32(Id)).AsEnumerable().GroupBy(x => new { x.month }).Select(x => new
+            var userIdentity = (ClaimsIdentity)User.Identity;
+            var claims = userIdentity.Claims;
+            var roleClaimType = userIdentity.RoleClaimType;
+            var rols = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+
+            if (rols.FirstOrDefault().Value == "admin")
+            {
+                zon = _admins.AsQueryable().Where(x => x.uname == HttpContext.User.Identity.Name).FirstOrDefault().zone;
+            }
+            else if (rols.FirstOrDefault().Value == "Collection" || rols.FirstOrDefault().Value == "Technitian")
+            {
+                zon = _users.AsQueryable().Where(x => x.uname == HttpContext.User.Identity.Name).FirstOrDefault().zone;
+            }
+            else if (rols.FirstOrDefault().Value == "root")
+            {
+                zon = "root";
+            }
+            var inv = zon=="root"? _invoices.AsQueryable().Where(x => x.year == Convert.ToInt32(Id)).AsEnumerable().GroupBy(x => new { x.month }).Select(x => new
             {
                 month =x.Key.month,
                 amount = x.AsEnumerable().Sum(x => (Convert.ToInt32(x.amount)))
+            }).ToList() :
+            _invoices.AsQueryable().Where(x => x.year == Convert.ToInt32(Id) && x.zone==zon).AsEnumerable().GroupBy(x => new { x.month }).Select(x => new
+            {
+                month = x.Key.month,
+                amount = x.AsEnumerable().Sum(x => (Convert.ToInt32(x.amount)))
             }).ToList();
-            var paidInv= _invoices.AsQueryable().Where(x => x.year == Convert.ToInt32(Id) && (x.status=="paid" || x.status== "PartiallyPaid")).AsEnumerable().GroupBy(x => new { x.month }).Select(x => new
+            var paidInv= zon == "root" ? _invoices.AsQueryable().Where(x => x.year == Convert.ToInt32(Id) && (x.status=="paid" || x.status== "PartiallyPaid")).AsEnumerable().GroupBy(x => new { x.month }).Select(x => new
             {
                 month = x.Key.month,
                 amount = x.AsEnumerable().Sum(x =>( Convert.ToInt32(x.amount)-(x.balance==""?0:Convert.ToInt32(x.balance))))
+            }).ToList() :
+            _invoices.AsQueryable().Where(x => x.year == Convert.ToInt32(Id) && x.zone==zon && (x.status == "paid" || x.status == "PartiallyPaid")).AsEnumerable().GroupBy(x => new { x.month }).Select(x => new
+            {
+                month = x.Key.month,
+                amount = x.AsEnumerable().Sum(x => (Convert.ToInt32(x.amount) - (x.balance == "" ? 0 : Convert.ToInt32(x.balance))))
             }).ToList();
-            var unpaidInv = _invoices.AsQueryable().Where(x => x.year == Convert.ToInt32(Id) &&( x.status == "unpaid" || x.status == "PartiallyPaid")).AsEnumerable().GroupBy(x => new { x.month }).Select(x => new
+            var unpaidInv = zon == "root" ? _invoices.AsQueryable().Where(x => x.year == Convert.ToInt32(Id) &&( x.status == "unpaid" || x.status == "PartiallyPaid")).AsEnumerable().GroupBy(x => new { x.month }).Select(x => new
+            {
+                month = x.Key.month,
+                amount = x.AsEnumerable().Sum(x => Convert.ToInt32(x.balance))
+            }).ToList():
+            _invoices.AsQueryable().Where(x => x.year == Convert.ToInt32(Id) && x.zone==zon && (x.status == "unpaid" || x.status == "PartiallyPaid")).AsEnumerable().GroupBy(x => new { x.month }).Select(x => new
             {
                 month = x.Key.month,
                 amount = x.AsEnumerable().Sum(x => Convert.ToInt32(x.balance))
