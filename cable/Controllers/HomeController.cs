@@ -70,9 +70,9 @@ namespace cable.Controllers
             {
                 zon = "root";
             }
-            ViewBag.activeCus = zon=="root"? _customers.AsQueryable().Where(x => x.status == "active").Count(): _customers.AsQueryable().Where(x => x.status == "active" && x.zone==zon).Count();
+            ViewBag.activeCus = zon=="root"? _customers.AsQueryable().Where(x => x.status.ToLower() == "active").Count(): _customers.AsQueryable().Where(x => x.status.ToLower() == "active" && x.zone==zon).Count();
             ViewBag.allCus =zon=="root"? _customers.AsQueryable().Count() : _customers.AsQueryable().Where(x=>x.zone==zon).Count();
-            ViewBag.deactiveCus = zon == "root" ? _customers.AsQueryable().Where(x => x.status == "deactive").Count(): _customers.AsQueryable().Where(x => x.status == "deactive" && x.zone==zon).Count();
+            ViewBag.deactiveCus = zon == "root" ? _customers.AsQueryable().Where(x => x.status.ToLower() == "deactive").Count(): _customers.AsQueryable().Where(x => x.status.ToLower() == "deactive" && x.zone==zon).Count();
             ViewBag.DeletedCus = zon == "root" ? _customers.AsQueryable().Where(x => x.status.ToLower() == "deleted").Count() : _customers.AsQueryable().Where(x => x.status.ToLower() == "deleted" && x.zone==zon).Count();
             ViewBag.allSTB = zon == "root" ? _stbs.AsQueryable().Count() : _stbs.AsQueryable().Where(x=>x.zone==zon).Count();
             ViewBag.allotedSTB = zon == "root" ? _stbs.AsQueryable().Where(x => x.cid != "available").Count(): _stbs.AsQueryable().Where(x => x.cid != "available" && x.zone==zon).Count();
