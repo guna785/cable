@@ -50,22 +50,39 @@ namespace cable.Controllers
             _stbs = stbs;
             _collections = collections;
         }
-
+        private string zon;
         public IActionResult Index()
         {
-            ViewBag.activeCus = _customers.AsQueryable().Where(x => x.status == "active").Count();
-            ViewBag.allCus = _customers.AsQueryable().Count();
-            ViewBag.deactiveCus = _customers.AsQueryable().Where(x => x.status == "deactive").Count();
-            ViewBag.DeletedCus = _customers.AsQueryable().Where(x => x.status == "Deleted").Count();
-            ViewBag.allSTB = _stbs.AsQueryable().Count();
-            ViewBag.allotedSTB = _stbs.AsQueryable().Where(x => x.cid != "available").Count();
-            ViewBag.unallotedSTB = _stbs.AsQueryable().Where(x => x.cid == "available").Count();
-            ViewBag.allInv = _invoices.AsQueryable().Count();
-            ViewBag.paidInvoice = _invoices.AsQueryable().Where(x=>x.status== "paid" || x.status== "PartiallyPaid").Count();
-            ViewBag.unpaidInvoice = _invoices.AsQueryable().Where(x => x.status == "unpaid").Count();
-            ViewBag.usr = _users.AsQueryable().Count();
-            ViewBag.activeusr = _users.AsQueryable().Where(x => x.status == "Active").Count();
-            ViewBag.deactiveusr = _users.AsQueryable().Where(x => x.status == "DeActive").Count();
+            var userIdentity = (ClaimsIdentity)User.Identity;
+            var claims = userIdentity.Claims;
+            var roleClaimType = userIdentity.RoleClaimType;
+            var rols = claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+
+            if (rols.FirstOrDefault().Value == "admin")
+            {
+                zon = _admins.AsQueryable().Where(x => x.uname == HttpContext.User.Identity.Name).FirstOrDefault().zone;
+            }
+            else if (rols.FirstOrDefault().Value == "Collection" || rols.FirstOrDefault().Value == "Technitian")
+            {
+                zon = _users.AsQueryable().Where(x => x.uname == HttpContext.User.Identity.Name).FirstOrDefault().zone;
+            }
+            else if (rols.FirstOrDefault().Value == "root")
+            {
+                zon = "root";
+            }
+            ViewBag.activeCus = zon=="root"? _customers.AsQueryable().Where(x => x.status == "active").Count(): _customers.AsQueryable().Where(x => x.status == "active" && x.zone==zon).Count();
+            ViewBag.allCus =zon=="root"? _customers.AsQueryable().Count() : _customers.AsQueryable().Where(x=>x.zone==zon).Count();
+            ViewBag.deactiveCus = zon == "root" ? _customers.AsQueryable().Where(x => x.status == "deactive").Count(): _customers.AsQueryable().Where(x => x.status == "deactive" && x.zone==zon).Count();
+            ViewBag.DeletedCus = zon == "root" ? _customers.AsQueryable().Where(x => x.status.ToLower() == "deleted").Count() : _customers.AsQueryable().Where(x => x.status.ToLower() == "deleted" && x.zone==zon).Count();
+            ViewBag.allSTB = zon == "root" ? _stbs.AsQueryable().Count() : _stbs.AsQueryable().Where(x=>x.zone==zon).Count();
+            ViewBag.allotedSTB = zon == "root" ? _stbs.AsQueryable().Where(x => x.cid != "available").Count(): _stbs.AsQueryable().Where(x => x.cid != "available" && x.zone==zon).Count();
+            ViewBag.unallotedSTB = zon == "root" ? _stbs.AsQueryable().Where(x => x.cid == "available").Count(): _stbs.AsQueryable().Where(x => x.cid == "available" && x.zone==zon).Count();
+            ViewBag.allInv = zon == "root" ? _invoices.AsQueryable().Count(): _invoices.AsQueryable().Where(x=>x.zone==zon).Count();
+            ViewBag.paidInvoice = zon == "root" ? _invoices.AsQueryable().Where(x=>x.status== "paid" || x.status== "PartiallyPaid").Count() : _invoices.AsQueryable().Where(x =>( x.status == "paid" || x.status == "PartiallyPaid") && x.zone==zon).Count();
+            ViewBag.unpaidInvoice = zon == "root" ? _invoices.AsQueryable().Where(x => x.status == "unpaid").Count() : _invoices.AsQueryable().Where(x => x.status == "unpaid" && x.zone==zon).Count();
+            ViewBag.usr = zon == "root" ? _users.AsQueryable().Count(): _users.AsQueryable().Where(x=>x.zone==zon).Count();
+            ViewBag.activeusr = zon == "root" ? _users.AsQueryable().Where(x => x.status.ToLower() == "active").Count(): _users.AsQueryable().Where(x => x.status.ToLower() == "active" && x.zone==zon).Count();
+            ViewBag.deactiveusr = zon == "root" ? _users.AsQueryable().Where(x => x.status.ToLower() == "deactive").Count(): _users.AsQueryable().Where(x => x.status.ToLower() == "deactive" && x.zone==zon).Count();
             return View();
         }
         public IActionResult Customer()
