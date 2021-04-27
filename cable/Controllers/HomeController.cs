@@ -78,7 +78,7 @@ namespace cable.Controllers
             ViewBag.allotedSTB = zon == "root" ? _stbs.AsQueryable().Where(x => x.cid != "available").Count(): _stbs.AsQueryable().Where(x => x.cid != "available" && x.zone==zon).Count();
             ViewBag.unallotedSTB = zon == "root" ? _stbs.AsQueryable().Where(x => x.cid == "available").Count(): _stbs.AsQueryable().Where(x => x.cid == "available" && x.zone==zon).Count();
             ViewBag.allInv = zon == "root" ? _invoices.AsQueryable().Count(): _invoices.AsQueryable().Where(x=>x.zone==zon).Count();
-            ViewBag.paidInvoice = zon == "root" ? _invoices.AsQueryable().Where(x=>x.status== "paid" || x.status== "PartiallyPaid").Count() : _invoices.AsQueryable().Where(x =>( x.status == "paid" || x.status == "PartiallyPaid") && x.zone==zon).Count();
+            ViewBag.paidInvoice = zon == "root" ? _invoices.AsQueryable().Where(x=>x.status== "paid" || x.status.ToLower()== "partiallypaid").Count() : _invoices.AsQueryable().Where(x =>( x.status == "paid" || x.status.ToLower() == "partiallypaid") && x.zone==zon).Count();
             ViewBag.unpaidInvoice = zon == "root" ? _invoices.AsQueryable().Where(x => x.status == "unpaid").Count() : _invoices.AsQueryable().Where(x => x.status == "unpaid" && x.zone==zon).Count();
             ViewBag.usr = zon == "root" ? _users.AsQueryable().Count(): _users.AsQueryable().Where(x=>x.zone==zon).Count();
             ViewBag.activeusr = zon == "root" ? _users.AsQueryable().Where(x => x.status.ToLower() == "active").Count(): _users.AsQueryable().Where(x => x.status.ToLower() == "active" && x.zone==zon).Count();
