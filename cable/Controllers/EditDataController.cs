@@ -122,7 +122,7 @@ namespace cable.Controllers
                         uid = HttpContext.User.Identity.Name,
                         remarks = "none",
                         subject = "Data Updation",
-                        zone = "root",
+                        zone = zon.zone,
                         CreatedAt = DateTime.Now
                     };
                     var r = await _log.InsertOneAsync(l);
@@ -159,7 +159,7 @@ namespace cable.Controllers
                         uid = HttpContext.User.Identity.Name,
                         remarks = "none",
                         subject = "Data Updation",
-                        zone = "root",
+                        zone = d.zone,
                         CreatedAt = DateTime.Now
                     };
                     var r = await _log.InsertOneAsync(l);
@@ -198,7 +198,7 @@ namespace cable.Controllers
                         uid = HttpContext.User.Identity.Name,
                         remarks = "none",
                         subject = "Data Updation",
-                        zone = "root",
+                        zone = d.zone,
                         CreatedAt = DateTime.Now
                     };
                     var r = await _log.InsertOneAsync(l);
@@ -250,7 +250,7 @@ namespace cable.Controllers
                         msg = "Admin User Name  " + zon.uname + " is Updated Successfully",
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        remarks = "none",
+                        remarks = d.zone,
                         subject = "Data Updation",
                         zone = "root",
                         CreatedAt = DateTime.Now
@@ -300,7 +300,7 @@ namespace cable.Controllers
                         uid = HttpContext.User.Identity.Name,
                         remarks = "none",
                         subject = "Data Updation",
-                        zone = "root",
+                        zone = d.zone,
                         CreatedAt = DateTime.Now
                     };
                     var r = await _log.InsertOneAsync(l);
@@ -352,7 +352,7 @@ namespace cable.Controllers
                         uid = HttpContext.User.Identity.Name,
                         remarks = "none",
                         subject = "Data Updation",
-                        zone = "root",
+                        zone = d.zone,
                         CreatedAt = DateTime.Now
                     };
                     var r = await _log.InsertOneAsync(l);

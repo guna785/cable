@@ -75,7 +75,7 @@ namespace cable.Controllers
                         msg = "Payment is Canceled  " + col.payid,
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        zone = "root",
+                        zone = col.zone,
                         remarks = "none",
                         subject = "Data Deletion",
                         CreatedAt = DateTime.Now
@@ -105,7 +105,7 @@ namespace cable.Controllers
                             msg = "Invoice is Canceled  " + inv.invid,
                             name = "EventLog",
                             uid = HttpContext.User.Identity.Name,
-                            zone = "root",
+                            zone = inv.zone,
                             remarks = "none",
                             subject = "Data Deletion",
                             CreatedAt = DateTime.Now
@@ -135,7 +135,7 @@ namespace cable.Controllers
                         msg = "STB is Removed from associated customer STN No : " + st.stbno,
                         name = "EventLog",
                         uid = HttpContext.User.Identity.Name,
-                        zone = "root",
+                        zone =st.zone,
                         remarks = "none",
                         subject = "Data Deletion",
                         CreatedAt = DateTime.Now
@@ -145,6 +145,39 @@ namespace cable.Controllers
                     return Ok(result);
                 }
 
+            }
+            return BadRequest("Invalid Requist");
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteCustomer([FromBody] string Id)
+        {
+            var cus = _customers.AsQueryable().Where(x => x.Id == ObjectId.Parse(Id)).FirstOrDefault();
+            if (cus != null)
+            {
+                cus.status = "Deleted";
+                var st = _stbss.AsQueryable().Where(x => x.cid == cus.Id.ToString());
+                foreach(var s in st)
+                {
+                    s.cid = "Available";
+                    await _stbss.ReplaceOneAsync(s);
+                }
+                var res = await _customers.ReplaceOneAsync(cus);
+                if (res)
+                {
+                    var l = new logs()
+                    {
+                        msg = "Customer is Removed Whose Customer ID  : " + cus.cid,
+                        name = "EventLog",
+                        uid = HttpContext.User.Identity.Name,
+                        zone = cus.zone,
+                        remarks = "none",
+                        subject = "Data Deletion",
+                        CreatedAt = DateTime.Now
+                    };
+                    var r = await _log.InsertOneAsync(l);
+                    var result = new { status = "Customer is Removed Whose Customer ID  : : " + cus.cid };
+                    return Ok(result);
+                }
             }
             return BadRequest("Invalid Requist");
         }

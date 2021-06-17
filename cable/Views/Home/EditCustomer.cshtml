@@ -365,7 +365,7 @@
         LoadData();
     });
     function AddNewSTB() {
-        $("#mbody").load("/Home/PopUpModelShow/AddCusSTB-" + cid, function () {
+        $("#mbody").load("/Home/PopUpModelShow/AddCusSTB-" + encodeURIComponent(cid), function () {
 
             $("#mtitle").text("Add Customer STB");
             $("#AreaModel").modal({ backdrop: 'static', keyboard: false });
@@ -379,7 +379,7 @@
         });
     }
     function GenerateINV() {
-        $("#mbody").load("/Home/PopUpModelShow/GenerateCusINV-" + cid, function () {
+        $("#mbody").load("/Home/PopUpModelShow/GenerateCusINV-" + encodeURIComponent(cid), function () {
 
             $("#mtitle").text("Generate Customer Invoice");
             $("#AreaModel").modal({ backdrop: 'static', keyboard: false });
